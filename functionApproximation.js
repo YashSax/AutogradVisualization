@@ -2,6 +2,8 @@ let CANVAS_X;
 let CANVAS_Y;
 
 let functionPoints = [];
+let nodeDiameter = 70;
+let nodeRadius = nodeDiameter / 2;
 
 function setup() {
     CANVAS_X = windowWidth;
@@ -38,11 +40,36 @@ function drawRegularNode(xPos, yPos) {
 }
 
 function drawHiddenNode(xPos, yPos) {
-    let radius = 70;
     fill(137, 207, 240);
-    ellipse(xPos, yPos, radius, radius);
+    ellipse(xPos, yPos, nodeDiameter, nodeDiameter);
 
-    line(xPos, yPos - radius / 2, xPos, yPos + radius / 2);
+    fill(0, 0, 0);
+    line(xPos, yPos - nodeRadius, xPos, yPos + nodeRadius);
+    textSize(40);
+    text("Σ", xPos - nodeRadius * (4 / 5), yPos + nodeRadius * (4 / 9));
+    text("σ", xPos + nodeRadius * (1 / 8), yPos + nodeRadius * (4 / 11));
+}
+
+function connectNodes(x1, y1, x2, y2) {
+    angle = atan2(y1 - y2, x1 - x2);
+    console.log(angle * 180 / Math.PI);
+    arrow(
+        x1 - nodeRadius * Math.cos(angle),
+        y1 - nodeRadius * Math.sin(angle),
+        x2 + nodeRadius * Math.cos(angle),
+        y2 + nodeRadius * Math.sin(angle)
+    );
+}
+
+function arrow(x1, y1, x2, y2) {
+    let offset = 10;
+    line(x1, y1, x2, y2)
+    push()
+    var angle = atan2(y1 - y2, x1 - x2);
+    translate(x2, y2);
+    rotate(angle - HALF_PI);
+    triangle(-offset * 0.6, offset * 1.5, offset * 0.6, offset * 1.5, 0, 0);
+    pop();
 }
 
 function draw() {
@@ -56,14 +83,14 @@ function draw() {
 
     // Function Drawing Area
     drawAxes();
-    console.log(canDrawPoint(mouseX))
     if (canDrawPoint(mouseX)) {
         mousePoint = [mouseX, mouseY];
         functionPoints.push(mousePoint);
         ellipse(mouseX, mouseY, 10, 10);
     }
 
-    drawRegularNode(90, 90);
+    drawRegularNode(90, CANVAS_Y / 2);
     drawHiddenNode(200, 200);
+    connectNodes(90, CANVAS_Y / 2, 200, 200);
 }
 
