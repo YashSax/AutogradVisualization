@@ -50,28 +50,6 @@ function drawHiddenNode(xPos, yPos) {
     text("σ", xPos + nodeRadius * (1 / 8), yPos + nodeRadius * (4 / 11));
 }
 
-function connectNodes(x1, y1, x2, y2) {
-    angle = atan2(y1 - y2, x1 - x2);
-    console.log(angle * 180 / Math.PI);
-    arrow(
-        x1 - nodeRadius * Math.cos(angle),
-        y1 - nodeRadius * Math.sin(angle),
-        x2 + nodeRadius * Math.cos(angle),
-        y2 + nodeRadius * Math.sin(angle)
-    );
-}
-
-function arrow(x1, y1, x2, y2) {
-    let offset = 10;
-    line(x1, y1, x2, y2)
-    push()
-    var angle = atan2(y1 - y2, x1 - x2);
-    translate(x2, y2);
-    rotate(angle - HALF_PI);
-    triangle(-offset * 0.6, offset * 1.5, offset * 0.6, offset * 1.5, 0, 0);
-    pop();
-}
-
 function draw() {
     // Background
     fill("#D9CAB3");
@@ -86,11 +64,26 @@ function draw() {
     if (canDrawPoint(mouseX)) {
         mousePoint = [mouseX, mouseY];
         functionPoints.push(mousePoint);
-        ellipse(mouseX, mouseY, 10, 10);
+        ellipse(mouseX, mouseY, 6, 6);
     }
 
-    drawRegularNode(90, CANVAS_Y / 2);
-    drawHiddenNode(200, 200);
-    connectNodes(90, CANVAS_Y / 2, 200, 200);
+    network = new Network(0, 0, CANVAS_X / 2, CANVAS_Y);
+    network.addLayer();
+    network.addLayer();
+    network.addLayer();
+
+    network.layers[1].addNode();
+    network.layers[1].addNode();
+    network.layers[1].addNode();
+
+    network.layers[2].addNode();
+    network.layers[2].addNode();
+    network.layers[2].addNode();
+
+    network.layers[3].addNode();
+    network.layers[3].addNode();
+    network.layers[3].addNode();
+    network.layers[3].addNode();
+    network.render();
 }
 
