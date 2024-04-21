@@ -12,13 +12,13 @@ class Network {
 
     refreshLayerPositions() {
         this.layers = [];
-        
         for (let i = 0; i < this.numLayers; i++) {
             this.layers.push(new Layer(
                 this.startX + this.width * i / this.numLayers,
                 this.startY,
                 this.width / this.numLayers,
-                this.height
+                this.height,
+                i == 0 || i == this.numLayers - 1
             ));
         }
     }
@@ -44,6 +44,16 @@ class Network {
         let removeLayerButton = createButton("Remove Layer");
         layerAddButton.position(this.startX, this.startY + 50);
         removeLayerButton.position(this.startX + 80, this.startY + 50);
+
+        layerAddButton.mousePressed(() => {
+            this.numLayers++;
+            this.refreshLayerPositions();
+        });
+
+        removeLayerButton.mousePressed(() => {
+            this.numLayers--;
+            this.refreshLayerPositions();
+        })
     }
 
     connectLayers(firstLayer, secondLayer) {
@@ -82,21 +92,22 @@ class Network {
 }
 
 class Layer {
-    constructor(posX, posY, width, height) {
+    constructor(posX, posY, width, height, isFirstOrLast) {
         this.posX = posX;
         this.posY = posY;
         this.width = width;
         this.height = height;
+        this.isFirstOrLast = isFirstOrLast;
 
         this.nodeX = this.posX + this.width / 2;
         this.numNodes = 1;
-        this.maxNodes = 7;
+        this.maxNodes = 6;
         this.nodePositions = []
         this.refreshNodePositions()
     }
 
     refreshNodePositions() {
-        this.nodePositions = []
+        this.nodePositions = [];
         for (let i = 0; i < this.numNodes; i++) {
             this.nodePositions.push(this.posY + this.height * (i + 1) / (this.numNodes + 1));
         }
@@ -114,6 +125,25 @@ class Layer {
         this.nodePositions.forEach((nodeY) => {
             this.drawRegularNode(this.nodeX, nodeY);
         });
+        
+        if (!this.isFirstOrLast) {
+            let lastNodeY = this.nodePositions[this.nodePositions.length - 1];
+            this.drawAddNodeButton(this.nodeX, lastNodeY + 50);
+
+            let mouseInButton = (Math.pow(mouseX - this.nodeX, 2) + Math.pow(mouseY - lastNodeY - 50, 2)) < Math.pow(nodeRadius / 2, 2);
+            
+            if (mouseIsPressed && mouseInButton) {
+                this.addNode();
+            }
+        }
+    }
+
+    drawAddNodeButton(xPos, yPos) {
+        fill(137, 207, 240, 100);
+        ellipse(xPos, yPos, nodeRadius, nodeRadius);
+        fill(0, 0, 0);
+        textAlign(CENTER);
+        text("+", xPos, yPos);
     }
 
     drawRegularNode(xPos, yPos) {

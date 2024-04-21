@@ -4,11 +4,14 @@ let CANVAS_Y;
 let functionPoints = [];
 let nodeDiameter = 70;
 let nodeRadius = nodeDiameter / 2;
+let network;
 
 function setup() {
     CANVAS_X = windowWidth;
     CANVAS_Y = windowHeight - 53;
     createCanvas(CANVAS_X, CANVAS_Y);
+
+    network = new Network(0, 0, CANVAS_X / 2, CANVAS_Y);
 }
 
 function drawAxes() {
@@ -67,23 +70,6 @@ function draw() {
         ellipse(mouseX, mouseY, 6, 6);
     }
 
-    network = new Network(0, 0, CANVAS_X / 2, CANVAS_Y);
-    network.addLayer();
-    network.addLayer();
-    network.addLayer();
-
-    network.layers[1].addNode();
-    network.layers[1].addNode();
-    network.layers[1].addNode();
-
-    network.layers[2].addNode();
-    network.layers[2].addNode();
-    network.layers[2].addNode();
-
-    network.layers[3].addNode();
-    network.layers[3].addNode();
-    network.layers[3].addNode();
-    network.layers[3].addNode();
     network.render();
 }
 
