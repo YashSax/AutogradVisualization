@@ -11,26 +11,27 @@ class Network {
     }
 
     refreshLayerPositions() {
+        let layerNodes = [];
+        for (let i = 0; i < this.layers.length; i++) {
+            layerNodes.push(this.layers[i].numNodes);
+        }
+        console.log(layerNodes);
+
         this.layers = [];
         for (let i = 0; i < this.numLayers; i++) {
+            let numNodes = 1;
+            if (i < layerNodes.length) {
+                numNodes = layerNodes[i];
+            }
             this.layers.push(new Layer(
                 this.startX + this.width * i / this.numLayers,
                 this.startY,
                 this.width / this.numLayers,
                 this.height,
+                numNodes,
                 i == 0 || i == this.numLayers - 1
             ));
         }
-    }
-
-    addLayer() {
-        this.numLayers++;
-        this.refreshLayerPositions();
-    }
-
-    removeLayer() {
-        this.numLayers++;
-        this.refreshLayerPositions();
     }
 
     render() {
@@ -41,17 +42,19 @@ class Network {
         }
 
         let layerAddButton = createButton("Add Layer");
-        let removeLayerButton = createButton("Remove Layer");
+        let resetNetworkButton = createButton("Reset Network");
         layerAddButton.position(this.startX, this.startY + 50);
-        removeLayerButton.position(this.startX + 80, this.startY + 50);
+        resetNetworkButton.position(this.startX + 80, this.startY + 50);
 
         layerAddButton.mousePressed(() => {
             this.numLayers++;
             this.refreshLayerPositions();
         });
 
-        removeLayerButton.mousePressed(() => {
-            this.numLayers--;
+        resetNetworkButton.mousePressed(() => {
+            this.numLayers = 2;
+            this.layers[0].numNodes = 1;
+            this.layers[1].numNodes = 1;
             this.refreshLayerPositions();
         })
     }
@@ -92,15 +95,15 @@ class Network {
 }
 
 class Layer {
-    constructor(posX, posY, width, height, isFirstOrLast) {
+    constructor(posX, posY, width, height, numNodes, isFirstOrLast) {
         this.posX = posX;
         this.posY = posY;
         this.width = width;
         this.height = height;
+        this.numNodes = numNodes;
         this.isFirstOrLast = isFirstOrLast;
 
         this.nodeX = this.posX + this.width / 2;
-        this.numNodes = 1;
         this.maxNodes = 6;
         this.nodePositions = []
         this.refreshNodePositions()
