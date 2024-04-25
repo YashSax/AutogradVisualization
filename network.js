@@ -5,6 +5,20 @@ class Network {
         this.width = width;
         this.height = height;
         
+        this.optimizerSelect = createSelect();
+        this.optimizerSelect.position(this.startX + this.width - 80, this.startY + 50);
+        this.optimizerSelect.option("SGD");
+        this.optimizerSelect.option("Adam");
+        this.optimizerSelect.selected("Adam");
+        this.optimizer = this.optimizerSelect.selected();
+
+        this.activationSelect = createSelect();
+        this.activationSelect.position(this.startX + this.width - 80, this.startY + 71);
+        this.activationSelect.option("ReLU");
+        this.activationSelect.option("Sigmoid");
+        this.activationSelect.option("Sigmoid");
+        this.activation = this.activationSelect.selected();
+
         this.numLayers = 2;
         this.layers = []
         this.refreshLayerPositions()
@@ -15,7 +29,6 @@ class Network {
         for (let i = 0; i < this.layers.length; i++) {
             layerNodes.push(this.layers[i].numNodes);
         }
-        console.log(layerNodes);
 
         this.layers = [];
         for (let i = 0; i < this.numLayers; i++) {
@@ -57,6 +70,13 @@ class Network {
             this.layers[1].numNodes = 1;
             this.refreshLayerPositions();
         })
+
+        fill(0, 0, 0);
+        textSize(15);
+        text("Optimizer:", this.startX + this.width - 150, this.startY + 17);
+        text("Activation:", this.startX + this.width - 150, this.startY + 37);
+        this.optimizer = this.optimizerSelect.selected();
+        this.activation = this.activationSelect.selected();
     }
 
     connectLayers(firstLayer, secondLayer) {
